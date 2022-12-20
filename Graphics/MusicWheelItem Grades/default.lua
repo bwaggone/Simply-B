@@ -36,5 +36,8 @@ return Def.Sprite{
 		end
 
 		self:visible(true):setstate(grades[params.Grade])
+		if params.PlayerNumber == PLAYER_2 then
+			self:x( _screen.w/(WideScale(2.15, 2.14)) + WideScale(6, 1))
+		end
 	end
 }

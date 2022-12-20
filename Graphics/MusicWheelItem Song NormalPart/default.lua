@@ -1,6 +1,6 @@
 -- the MusicWheelItem for CourseMode contains the basic colored Quads
 -- use that as a common base, and add in a Sprite for "Has Edit"
-local af = LoadActor("./MusicWheelItem Course NormalPart.lua")
+local af = LoadActor("../MusicWheelItem Course NormalPart.lua")
 
 local stepstype = GAMESTATE:GetCurrentStyle():GetStepsType()
 
@@ -10,7 +10,11 @@ af[#af+1] = Def.Sprite{
 	Texture=THEME:GetPathG("", "Has Edit (doubleres).png"),
 	InitCommand=function(self)
 		self:horizalign(left):visible(false):zoom(0.375)
-		self:x( _screen.w/(WideScale(2.15, 2.14)) - self:GetWidth()*self:GetZoom() - 8 )
+		if GAMESTATE:GetMultiplayer() then
+			self:x( _screen.w/(WideScale(2.15, 2.14)) - self:GetWidth()*self:GetZoom() - WideScale(36, 50) )
+		else
+			self:x( _screen.w/(WideScale(2.15, 2.14)) - self:GetWidth()*self:GetZoom() - 8)
+		end
 
 		if DarkUI() then self:diffuse(0,0,0,1) end
 	end,
