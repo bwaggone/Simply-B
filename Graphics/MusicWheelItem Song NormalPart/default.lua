@@ -1,6 +1,6 @@
 -- the MusicWheelItem for CourseMode contains the basic colored Quads
 -- use that as a common base, and add in a Sprite for "Has Edit"
-local af = LoadActor("./MusicWheelItem Course NormalPart.lua")
+local af = LoadActor("../MusicWheelItem Course NormalPart.lua")
 
 local stepstype = GAMESTATE:GetCurrentStyle():GetStepsType()
 
