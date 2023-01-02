@@ -1,6 +1,8 @@
 local args = {...}
 local pn = args[1]
 
+local IsUltraWide = (GetScreenAspectRatio() > 21/9)
+
 local function GetLamp(song)
     local best_lamp = 6
 
@@ -60,22 +62,30 @@ end
 return Def.ActorFrame{
 	Def.Quad{
 		SetCommand=function(self, param)
-			self:scaletoclipped(SL_WideScale(3, 6), 31)
+			self:scaletoclipped(SL_WideScale(5, 6), 31)
 			
 			local fc_lamp = GetLamp(param.Song)
 			
 			-- If unplayed or no FC, then no lamp
-			if fc_lamp == 6 then
-				self:diffuse({1, 1, 1, 0})
+			if fc_lamp > 4 then
+				self:visible(false)
 			else
-				self:diffuse(SL.JudgmentColors[SL.Global.GameMode][fc_lamp])
+				self:visible(true)
+				self:diffuseshift():effectperiod(0.8)
+				self:effectcolor1(SL.JudgmentColors[SL.Global.GameMode][fc_lamp])
+				self:effectcolor2(lerp_color(0.70, color("#ffffff"),
+					SL.JudgmentColors[SL.Global.GameMode][fc_lamp]))
 			end
 			self:horizalign(right)
 			
 			-- Align P2's lamps to the right of the grade.
 			if pn == PLAYER_2 then
-				-- TODO: Alignment is still a WIP
-				self:x(SL_WideScale(18, 30) * 2 + SL_WideScale(0, 6))
+				-- Ultrawide is quite hard to align, manually scale for it.
+				if IsUltraWide then
+					self:x(SL_WideScale(18, 30) * 2 + SL_WideScale(5, 8) + 40)
+				else
+					self:x(SL_WideScale(18, 30) * 2 + SL_WideScale(5, 8))
+				end
 			end
 		end
 	}
