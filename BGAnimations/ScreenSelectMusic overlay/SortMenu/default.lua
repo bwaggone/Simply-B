@@ -298,6 +298,9 @@ local t = Def.ActorFrame {
 			if (game=="dance" or game=="pump" or game=="techno") then
 				table.insert(wheel_options, {"FeelingSalty", "TestInput"})
 			end
+			if GAMESTATE:GetCurrentSong() ~= nil and ThemePrefs.Get("KeyboardFeatures") then
+				table.insert(wheel_options, {"HardTime", "PracticeMode"})
+			end
 		end
 
 		table.insert(wheel_options, {"TakeABreather", "LoadNewSongs"})
