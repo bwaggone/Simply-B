@@ -136,6 +136,68 @@ local function BuildCenteredModal(def, af, instance)
 		end
 	end
 
+	-- Simple Confirm Navigation Buttons
+	local use_default_buttons = def.Navigation
+		and def.Navigation.type == "simple_confirm"
+		and (def.Navigation.default_buttons == true or (def.Navigation.default_buttons ~= false and not def.Navigation.on_cursor_change and not def.Navigation.custom_buttons))
+
+	if use_default_buttons then
+		-- Default Yes / No button actors
+		local choices = def.Navigation.choices or { "Yes", "No" }
+		local choices_af = Def.ActorFrame{
+			Name = "ChoicesAF",
+			InitCommand = function(self) self:y(def.ChoicesY or 30) end,
+		}
+
+		local choice_spacing = math.min(150, (width - 40) / #choices)
+		local choice_w = choice_spacing - 12
+		local start_x = -(#choices - 1) * choice_spacing / 2
+
+		for i, label in ipairs(choices) do
+			local x_pos = start_x + (i - 1) * choice_spacing
+			choices_af[#choices_af+1] = Def.ActorFrame{
+				Name = "Choice_" .. i,
+				InitCommand = function(self) self:x(x_pos) end,
+
+				Def.Quad{
+					Name = "Bg",
+					InitCommand = function(self)
+						local focus_color = def.FocusColor or GetCurrentColor()
+						self:zoomto(choice_w, 34)
+							:diffuse(i == 1 and focus_color or color("0,0,0,0.5"))
+							:diffusealpha(i == 1 and 0.85 or 0.35)
+					end,
+					ChoiceChangedCommand = function(self, params)
+						local is_selected = (params.index == i)
+						local focus_color = def.FocusColor or GetCurrentColor()
+						self:stoptweening():linear(0.1)
+							:diffuse(is_selected and focus_color or color("0,0,0,0.5"))
+							:diffusealpha(is_selected and 0.85 or 0.35)
+					end
+				},
+
+				LoadFont("Common Bold")..{
+					Name = "Label",
+					Text = label,
+					InitCommand = function(self)
+						self:zoom(i == 1 and 0.82 or 0.72)
+							:diffuse(i == 1 and Color.Black or Color.White)
+							:diffusealpha(i == 1 and 1 or 0.6)
+							:maxwidth(choice_w - 8)
+					end,
+					ChoiceChangedCommand = function(self, params)
+						local is_selected = (params.index == i)
+						self:stoptweening():linear(0.1)
+							:zoom(is_selected and 0.82 or 0.72)
+							:diffuse(is_selected and Color.Black or Color.White)
+							:diffusealpha(is_selected and 1 or 0.6)
+					end
+				}
+			}
+		end
+		container[#container+1] = choices_af
+	end
+
 	af[#af+1] = container
 end
 
@@ -175,6 +237,67 @@ local function BuildFullScreen(def, af, instance)
 			content_actor.Name = content_actor.Name or "ContentSlot"
 			container[#container+1] = content_actor
 		end
+	end
+
+	-- Simple Confirm Navigation Buttons
+	local use_default_buttons = def.Navigation
+		and def.Navigation.type == "simple_confirm"
+		and (def.Navigation.default_buttons == true or (def.Navigation.default_buttons ~= false and not def.Navigation.on_cursor_change and not def.Navigation.custom_buttons))
+
+	if use_default_buttons then
+		local choices = def.Navigation.choices or { "Yes", "No" }
+		local choices_af = Def.ActorFrame{
+			Name = "ChoicesAF",
+			InitCommand = function(self) self:xy(_screen.cx, def.ChoicesY or (_screen.cy + 120)) end,
+		}
+
+		local choice_spacing = math.min(220, (_screen.w * 0.8) / #choices)
+		local choice_w = choice_spacing - 16
+		local start_x = -(#choices - 1) * choice_spacing / 2
+
+		for i, label in ipairs(choices) do
+			local x_pos = start_x + (i - 1) * choice_spacing
+			choices_af[#choices_af+1] = Def.ActorFrame{
+				Name = "Choice_" .. i,
+				InitCommand = function(self) self:x(x_pos) end,
+
+				Def.Quad{
+					Name = "Bg",
+					InitCommand = function(self)
+						local focus_color = def.FocusColor or GetCurrentColor()
+						self:zoomto(choice_w, 36)
+							:diffuse(i == 1 and focus_color or color("0,0,0,0.5"))
+							:diffusealpha(i == 1 and 0.85 or 0.35)
+					end,
+					ChoiceChangedCommand = function(self, params)
+						local is_selected = (params.index == i)
+						local focus_color = def.FocusColor or GetCurrentColor()
+						self:stoptweening():linear(0.1)
+							:diffuse(is_selected and focus_color or color("0,0,0,0.5"))
+							:diffusealpha(is_selected and 0.85 or 0.35)
+					end
+				},
+
+				LoadFont("Common Bold")..{
+					Name = "Label",
+					Text = label,
+					InitCommand = function(self)
+						self:zoom(i == 1 and 0.85 or 0.72)
+							:diffuse(i == 1 and Color.Black or Color.White)
+							:diffusealpha(i == 1 and 1 or 0.6)
+							:maxwidth(choice_w - 12)
+					end,
+					ChoiceChangedCommand = function(self, params)
+						local is_selected = (params.index == i)
+						self:stoptweening():linear(0.1)
+							:zoom(is_selected and 0.85 or 0.72)
+							:diffuse(is_selected and Color.Black or Color.White)
+							:diffusealpha(is_selected and 1 or 0.6)
+					end
+				}
+			}
+		end
+		container[#container+1] = choices_af
 	end
 
 	-- Optional Footer text
@@ -419,7 +542,12 @@ function SL.Overlay.Create(def)
 		},
 		_is_open = false,
 		_actor_ref = nil,
+		Navigation = def.Navigation,
 	}
+
+	if def.Navigation and SL.Overlay.AttachNavigation then
+		SL.Overlay.AttachNavigation(instance, def.Navigation)
+	end
 
 	-- Root ActorFrame definition
 	local af = Def.ActorFrame{
@@ -641,6 +769,18 @@ function SL.Overlay.Create(def)
 							pane:playcommand("Show", params)
 							pane:stoptweening():decelerate(0.18):zoom(1):diffusealpha(1)
 						end
+					end
+				end
+			end
+
+			-- If simple_confirm navigation is present, refresh initial choice state
+			local parent = self._actor_ref:GetChild("ModalContainer") or self._actor_ref:GetChild("FullScreenContainer") or self._actor_ref
+			local choices_af = parent and parent:GetChild("ChoicesAF")
+			if choices_af and self._nav_state and self._nav_state.choices then
+				for i = 1, #self._nav_state.choices do
+					local choice = choices_af:GetChild("Choice_" .. i)
+					if choice then
+						choice:playcommand("ChoiceChanged", { index = self._nav_state.index or 1 })
 					end
 				end
 			end
