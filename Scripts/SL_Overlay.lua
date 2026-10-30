@@ -127,13 +127,47 @@ local function BuildCenteredModal(def, af, instance)
 		}
 	}
 
-	-- User Content Slot
+	-- User Content Slot or Default Simple Confirm Buttons
 	if def.Content and type(def.Content) == "function" then
 		local content_actor = def.Content(instance)
 		if content_actor then
 			content_actor.Name = content_actor.Name or "ContentSlot"
 			container[#container+1] = content_actor
 		end
+	elseif def.Navigation and def.Navigation.type == "simple_confirm" then
+		-- Default Yes / No button actors
+		local choices = def.Navigation.choices or { "Yes", "No" }
+		local choices_af = Def.ActorFrame{
+			Name = "ChoicesAF",
+			InitCommand = function(self) self:y(30) end,
+		}
+
+		for i, label in ipairs(choices) do
+			local x_pos = (i == 1) and -70 or 70
+			choices_af[#choices_af+1] = Def.ActorFrame{
+				Name = "Choice_" .. i,
+				InitCommand = function(self)
+					local focus_color = def.FocusColor or GetCurrentColor()
+					self:x(x_pos):zoom(i == 1 and 1.1 or 0.85)
+						:diffuse(i == 1 and focus_color or Color.White)
+						:diffusealpha(i == 1 and 1 or 0.5)
+				end,
+				ChoiceChangedCommand = function(self, params)
+					local is_selected = (params.index == i)
+					local focus_color = def.FocusColor or GetCurrentColor()
+					self:finishtweening():linear(0.1)
+						:zoom(is_selected and 1.1 or 0.85)
+						:diffuse(is_selected and focus_color or Color.White)
+						:diffusealpha(is_selected and 1 or 0.5)
+				end,
+
+				LoadFont("Common Bold")..{
+					Text = label,
+					InitCommand = function(self) self:zoom(1) end
+				}
+			}
+		end
+		container[#container+1] = choices_af
 	end
 
 	af[#af+1] = container
@@ -358,7 +392,12 @@ function SL.Overlay.Create(def)
 		},
 		_is_open = false,
 		_actor_ref = nil,
+		Navigation = def.Navigation,
 	}
+
+	if def.Navigation and SL.Overlay.AttachNavigation then
+		SL.Overlay.AttachNavigation(instance, def.Navigation)
+	end
 
 	-- Root ActorFrame definition
 	local af = Def.ActorFrame{
