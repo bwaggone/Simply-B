@@ -11,68 +11,112 @@ local paneHeight = 360
 local borderWidth = 2
 
 local SetRpgStyle = function(eventAf)
-	eventAf:GetChild("MainBorder"):diffuse(RpgYellow)
-	eventAf:GetChild("BackgroundImage"):visible(true)
-	eventAf:GetChild("BackgroundColor"):diffuse(color("0,0,0.1,0.8"))
-	eventAf:GetChild("BackgroundColor2"):visible(true):diffuse(color("1,1,1,0.05")):faderight(0.1):fadeleft(0.1)
-	eventAf:GetChild("HeaderBorder"):diffuse(RpgYellow)
+	local border = eventAf:GetChild("Border") or eventAf:GetChild("MainBorder")
+	if border then border:diffuse(RpgYellow) end
+
+	local bg_img = eventAf:GetChild("BackgroundImage")
+	if bg_img then bg_img:visible(true) end
+
+	local bg = eventAf:GetChild("Background") or eventAf:GetChild("BackgroundColor")
+	if bg then bg:diffuse(color("0,0,0.1,0.8")) end
+
+	local bg2 = eventAf:GetChild("BackgroundColor2")
+	if bg2 then bg2:visible(true):diffuse(color("1,1,1,0.05")):faderight(0.1):fadeleft(0.1) end
+
+	local headerBorder = eventAf:GetChild("HeaderBorder")
+	if headerBorder then headerBorder:diffuse(RpgYellow) end
 	
+	local headerBar = eventAf:GetChild("HeaderBar") or eventAf:GetChild("HeaderBackground")
 	local idx = SL.Global.ActiveColorIndex
 	local faction_name = SL.SRPG10.GetFactionName(idx)
 
-	if faction_name == "Stamina Nation" then
-		eventAf:GetChild("HeaderBackground")
-				:diffusetopedge(color("#523328"))
-				:diffusebottomedge(color("#815354"))
-	elseif faction_name == "Democratic People's Republic of Timing" then
-		eventAf:GetChild("HeaderBackground")
-				:diffusetopedge(color("#15313D"))
-				:diffusebottomedge(color("#34605D"))
-    elseif faction_name == "Footspeed Empire" then
-		eventAf:GetChild("HeaderBackground")
-				:diffusetopedge(color("#412147"))
-				:diffusebottomedge(color("#634B80"))
-	else
-		-- "Unaffiliated"
-		eventAf:GetChild("HeaderBackground")
-				:diffusetopedge(color("#14362D"))
-				:diffusebottomedge(color("#376648"))
+	if headerBar then
+		if faction_name == "Stamina Nation" then
+			headerBar:diffusetopedge(color("#523328")):diffusebottomedge(color("#815354"))
+		elseif faction_name == "Democratic People's Republic of Timing" then
+			headerBar:diffusetopedge(color("#15313D")):diffusebottomedge(color("#34605D"))
+		elseif faction_name == "Footspeed Empire" then
+			headerBar:diffusetopedge(color("#412147")):diffusebottomedge(color("#634B80"))
+		else
+			-- "Unaffiliated"
+			headerBar:diffusetopedge(color("#14362D")):diffusebottomedge(color("#376648"))
+		end
 	end
 
-	eventAf:GetChild("Header"):diffuse(RpgText)
-	eventAf:GetChild("EX"):visible(false)
-	eventAf:GetChild("BodyText"):diffuse(Color.White)
-	eventAf:GetChild("PaneIcons"):GetChild("Text"):diffuse(RpgText)
+	local header = eventAf:GetChild("Title") or eventAf:GetChild("Header")
+	if header then header:diffuse(RpgText) end
+
+	local ex = eventAf:GetChild("EX")
+	if ex then ex:visible(false) end
+
+	local bodyText = eventAf:GetChild("BodyText")
+	if bodyText then bodyText:diffuse(Color.White) end
+
+	local paneIcons = eventAf:GetChild("PaneIcons")
+	if paneIcons and paneIcons:GetChild("Text") then
+		paneIcons:GetChild("Text"):diffuse(RpgText)
+	end
 
 	local leaderboard = eventAf:GetChild("Leaderboard")
-	for i=1, NumEntries do
-		local entry = leaderboard:GetChild("LeaderboardEntry"..i)
-		entry:GetChild("Rank"):diffuse(Color.White)
-		entry:GetChild("Name"):diffuse(Color.White)
-		entry:GetChild("Score"):diffuse(Color.White)
-		entry:GetChild("Date"):diffuse(Color.White)
+	if leaderboard then
+		for i=1, NumEntries do
+			local entry = leaderboard:GetChild("LeaderboardEntry"..i)
+			if entry then
+				entry:GetChild("Rank"):diffuse(Color.White)
+				entry:GetChild("Name"):diffuse(Color.White)
+				entry:GetChild("Score"):diffuse(Color.White)
+				entry:GetChild("Date"):diffuse(Color.White)
+			end
+		end
 	end
 end
 
 local SetItlStyle = function(eventAf)
-	eventAf:GetChild("MainBorder"):diffuse(ItlPink)
-	eventAf:GetChild("BackgroundImage"):visible(false)
-	eventAf:GetChild("BackgroundColor"):diffuse(Color.Black):diffusealpha(1)
-	eventAf:GetChild("BackgroundColor2"):visible(false)
-	eventAf:GetChild("HeaderBorder"):diffuse(ItlPink)
-	eventAf:GetChild("HeaderBackground"):diffusetopedge(color("0.3,0.3,0.3,1")):diffusebottomedge(color("0.157,0.157,0.165,1"))
-	eventAf:GetChild("Header"):diffuse(Color.White)
-	eventAf:GetChild("EX"):diffuse(Color.White):visible(false)
-	eventAf:GetChild("BodyText"):diffuse(Color.White)
-	eventAf:GetChild("PaneIcons"):GetChild("Text"):diffuse(ItlPink)
+	local border = eventAf:GetChild("Border") or eventAf:GetChild("MainBorder")
+	if border then border:diffuse(ItlPink) end
+
+	local bg_img = eventAf:GetChild("BackgroundImage")
+	if bg_img then bg_img:visible(false) end
+
+	local bg = eventAf:GetChild("Background") or eventAf:GetChild("BackgroundColor")
+	if bg then bg:diffuse(Color.Black):diffusealpha(1) end
+
+	local bg2 = eventAf:GetChild("BackgroundColor2")
+	if bg2 then bg2:visible(false) end
+
+	local headerBorder = eventAf:GetChild("HeaderBorder")
+	if headerBorder then headerBorder:diffuse(ItlPink) end
+
+	local headerBar = eventAf:GetChild("HeaderBar") or eventAf:GetChild("HeaderBackground")
+	if headerBar then
+		headerBar:diffusetopedge(color("0.3,0.3,0.3,1")):diffusebottomedge(color("0.157,0.157,0.165,1"))
+	end
+
+	local header = eventAf:GetChild("Title") or eventAf:GetChild("Header")
+	if header then header:diffuse(Color.White) end
+
+	local ex = eventAf:GetChild("EX")
+	if ex then ex:diffuse(Color.White):visible(false) end
+
+	local bodyText = eventAf:GetChild("BodyText")
+	if bodyText then bodyText:diffuse(Color.White) end
+
+	local paneIcons = eventAf:GetChild("PaneIcons")
+	if paneIcons and paneIcons:GetChild("Text") then
+		paneIcons:GetChild("Text"):diffuse(ItlPink)
+	end
 
 	local leaderboard = eventAf:GetChild("Leaderboard")
-	for i=1, NumEntries do
-		local entry = leaderboard:GetChild("LeaderboardEntry"..i)
-		entry:GetChild("Rank"):diffuse(Color.White)
-		entry:GetChild("Name"):diffuse(Color.White)
-		entry:GetChild("Score"):diffuse(Color.White)
-		entry:GetChild("Date"):diffuse(Color.White)
+	if leaderboard then
+		for i=1, NumEntries do
+			local entry = leaderboard:GetChild("LeaderboardEntry"..i)
+			if entry then
+				entry:GetChild("Rank"):diffuse(Color.White)
+				entry:GetChild("Name"):diffuse(Color.White)
+				entry:GetChild("Score"):diffuse(Color.White)
+				entry:GetChild("Date"):diffuse(Color.White)
+			end
+		end
 	end
 end
 
@@ -306,7 +350,10 @@ local GetRpgPaneFunctions = function(eventAf, rpgData, player)
 	for text in ivalues(paneTexts) do
 		table.insert(paneFunctions, function(eventAf)
 			SetRpgStyle(eventAf)
-			eventAf:GetChild("Header"):settext(rpgData["name"]:gsub("SRPG", "Stamina RPG")..(isDoubles and "  Doubles" or ""))
+			local header = eventAf:GetChild("Title") or eventAf:GetChild("Header")
+			if header then
+				header:settext(rpgData["name"]:gsub("SRPG", "Stamina RPG")..(isDoubles and "  Doubles" or ""))
+			end
 			eventAf:GetChild("Leaderboard"):visible(false)
 			local bodyText = eventAf:GetChild("BodyText")
 
@@ -376,7 +423,10 @@ local GetRpgPaneFunctions = function(eventAf, rpgData, player)
 
 	table.insert(paneFunctions, function(eventAf)
 		SetRpgStyle(eventAf)
-		eventAf:GetChild("Header"):settext(rpgData["name"]:gsub("SRPG", "Stamina RPG")..(isDoubles and "  Doubles" or ""))
+		local header = eventAf:GetChild("Title") or eventAf:GetChild("Header")
+		if header then
+			header:settext(rpgData["name"]:gsub("SRPG", "Stamina RPG")..(isDoubles and "  Doubles" or ""))
+		end
 		SetLeaderboardData(eventAf, rpgData["rpgLeaderboard"], "rpg")
 		eventAf:GetChild("Leaderboard"):visible(true)
 		eventAf:GetChild("BodyText"):visible(false)
@@ -597,7 +647,10 @@ local GetItlPaneFunctions = function(eventAf, itlData, player)
 		table.insert(paneFunctions, function(eventAf)
 			SetItlStyle(eventAf)
 			local isDoubles = itlData["isDoubles"]
-			eventAf:GetChild("Header"):settext(itlData["name"]:gsub("ITL Online", "ITL")..(isDoubles and "  Doubles" or ""))
+			local header = eventAf:GetChild("Title") or eventAf:GetChild("Header")
+			if header then
+				header:settext(itlData["name"]:gsub("ITL Online", "ITL")..(isDoubles and "  Doubles" or ""))
+			end
 			eventAf:GetChild("Leaderboard"):visible(false)
 			eventAf:GetChild("EX"):visible(true)
 			local bodyText = eventAf:GetChild("BodyText")
@@ -740,7 +793,10 @@ local GetItlPaneFunctions = function(eventAf, itlData, player)
 	table.insert(paneFunctions, function(eventAf)
 		SetItlStyle(eventAf)
 		SetLeaderboardData(eventAf, itlData["itlLeaderboard"], "itl")
-		eventAf:GetChild("Header"):settext(itlData["name"]:gsub("ITL Online", "ITL"))
+		local header = eventAf:GetChild("Title") or eventAf:GetChild("Header")
+		if header then
+			header:settext(itlData["name"]:gsub("ITL Online", "ITL"))
+		end
 		eventAf:GetChild("Leaderboard"):visible(true)
 		eventAf:GetChild("EX"):visible(true)
 		eventAf:GetChild("BodyText"):visible(false)
@@ -749,189 +805,139 @@ local GetItlPaneFunctions = function(eventAf, itlData, player)
 	return paneFunctions
 end
 
-local af = Def.ActorFrame{
-	Name="EventOverlay",
-	InitCommand=function(self)
-		self:visible(false)
-	end,
-	-- Slightly darken the entire screen
-	Def.Quad {
-		InitCommand=function(self) self:FullScreen():diffuse(Color.Black):diffusealpha(0.8) end
+return SL.Overlay.Create({
+	Name = "EventOverlay",
+	Layout = "DualPane",
+	Width1Player = 330,
+	Width2Player = 230,
+	Height = 360,
+	HeaderHeight = 24,
+	PaneOffset = 160,
+	OffsetY = -15,
+	TitleFont = "Wendy/_wendy small",
+	TitleZoom = 0.5,
+	HasFooter = false,
+	Backdrop = { color = Color.Black, alpha = 0.8 },
+
+	Navigation = {
+		type = "paged",
+		on_page_change = function(self, page_index, page_func, player)
+			local pane = self:GetPane(player)
+			if pane and page_func then
+				page_func(pane)
+			end
+		end,
 	},
 
-	-- Press START to dismiss text.
-	LoadFont("Common Normal")..{
-		Text=THEME:GetString("Common", "PopupDismissText"),
-		InitCommand=function(self) self:xy(_screen.cx, _screen.h-50):zoom(1.1) end
-	}
-}
+	OnPaneShow = function(self, player, paneAf, params)
+		if not (params and params.data) then return end
+		local pn = ToEnumShortString(player)
+		local paneFunctions = {}
 
-for player in ivalues(PlayerNumber) do
-	af[#af+1] = Def.ActorFrame{
-		Name=ToEnumShortString(player).."EventAf",
-		InitCommand=function(self)
-			self.PaneFunctions = {}
-			self:visible(false)
-			if GAMESTATE:GetNumSidesJoined() == 1 then
-				self:xy(_screen.cx, _screen.cy - 15)
-			else
-				self:xy(_screen.cx + 160 * (player==PLAYER_1 and -1 or 1), _screen.cy - 15)
+		if params.data["rpg"] then
+			local rpgData = params.data["rpg"]
+			for func in ivalues(GetRpgPaneFunctions(paneAf, rpgData, player)) do
+				paneFunctions[#paneFunctions+1] = func
 			end
-		end,
-		PlayerJoinedMessageCommand=function(self)
-			self:visible(GAMESTATE:IsSideJoined(player))
-		end,
-		ShowCommand=function(self, params)
-			local pn = ToEnumShortString(player)
-			self.PaneFunctions = {}
+		end
 
-			if params.data["rpg"] then
-				local rpgData = params.data["rpg"]
-				for func in ivalues(GetRpgPaneFunctions(self, rpgData, player)) do
-					self.PaneFunctions[#self.PaneFunctions+1] = func
-				end
-			end
-			
-			if params.data["itl"] then
-				local itlData = params.data["itl"]
-				for func in ivalues(GetItlPaneFunctions(self, itlData, player)) do
-					self.PaneFunctions[#self.PaneFunctions+1] = func
-				end
-
-				-- If the ITL song was played outside of the pack for the first time,
-				-- write the ITL data for it.
-				-- All other cases should be handled by normal ItlFile.lua write.
-				local song = GAMESTATE:GetCurrentSong()
-				local song_dir = song:GetSongDir()
-				if SL[pn].ITLData["pathMap"][song_dir] == nil then
-					UpdateItlData(player)
-				end
+		if params.data["itl"] then
+			local itlData = params.data["itl"]
+			for func in ivalues(GetItlPaneFunctions(paneAf, itlData, player)) do
+				paneFunctions[#paneFunctions+1] = func
 			end
 
-			self.PaneIndex = 1
-			if #self.PaneFunctions > 0 then
-				self.PaneFunctions[self.PaneIndex](self)
-				self:visible(true)
+			-- If the ITL song was played outside of the pack for the first time,
+			-- write the ITL data for it.
+			-- All other cases should be handled by normal ItlFile.lua write.
+			local song = GAMESTATE:GetCurrentSong()
+			local song_dir = song:GetSongDir()
+			if SL[pn].ITLData["pathMap"][song_dir] == nil then
+				UpdateItlData(player)
 			end
-		end,
-		EventOverlayInputEventMessageCommand=function(self, event)
-			if #self.PaneFunctions == 0 then return end
+		end
 
-			if event.PlayerNumber == player then
-				if event.type == "InputEventType_FirstPress" then
-					-- We don't use modulus because #Leaderboards might be zero.
-					if event.GameButton == "MenuLeft" then
-						self.PaneIndex = self.PaneIndex - 1
-						if self.PaneIndex == 0 then
-							-- Wrap around if we decremented from 1 to 0.
-							self.PaneIndex = #self.PaneFunctions
+		if #paneFunctions > 0 then
+			self:SetPages(player, paneFunctions)
+			paneAf:visible(true)
+		end
+	end,
+
+	OnPlayerInput = function(self, player, event)
+		if event.type == "InputEventType_FirstPress" and event.GameButton == "Select" then
+			MESSAGEMAN:Broadcast("Code", { Name = "Screenshot", PlayerNumber = player })
+		end
+	end,
+
+	OnPlayerReady = function(self, player, is_ready)
+		local pane = self:GetPane(player)
+		if pane then
+			pane:diffusealpha(is_ready and 0.6 or 1)
+		end
+	end,
+
+	OnClose = function(self, reason)
+		local screen = SCREENMAN:GetTopScreen()
+		if screen then
+			local overlay = screen:GetChild("Overlay")
+			local evalCommon = overlay and overlay:GetChild("ScreenEval Common")
+			if evalCommon then
+				for player in ivalues(PlayerNumber) do
+					if GAMESTATE:IsSideJoined(player) then
+						local pn = ToEnumShortString(player)
+						local progressBox = evalCommon:GetChild(pn .. "_AF_Upper"):GetChild("EventProgress" .. pn)
+						if progressBox ~= nil then
+							progressBox:playcommand("MaybeShow")
 						end
-					elseif event.GameButton == "MenuRight" then
-						self.PaneIndex = self.PaneIndex + 1
-						if self.PaneIndex > #self.PaneFunctions then
-							-- Wrap around if we incremented past #Leaderboards
-							self.PaneIndex = 1
-						end
-					elseif event.GameButton == "Select" then
-						MESSAGEMAN:Broadcast("Code", { Name="Screenshot", PlayerNumber=player })
-					end
-
-					if event.GameButton == "MenuLeft" or event.GameButton == "MenuRight" then
-						self.PaneFunctions[self.PaneIndex](self)
 					end
 				end
 			end
-		end,
-		-- White border
-		Def.Quad {
-			Name="MainBorder",
-			InitCommand=function(self)
-				self:zoomto(paneWidth + borderWidth, paneHeight + borderWidth + 1)
-			end
-		},
+		end
+	end,
 
-		-- Main Black cement background
-		Def.Sprite {
+	PlayerContent = function(self, player)
+		local elements = {}
+
+		-- Main Black cement background (SRPG)
+		elements[#elements+1] = Def.Sprite {
 			Name="BackgroundImage",
 			Texture=THEME:GetPathG("", "_VisualStyles/SRPG10/Overlay-BG.png"),
 			InitCommand=function(self)
-				-- self:CropTo(paneWidth, paneHeight)
-				self:zoomto(paneWidth, paneHeight)
+				self:zoomto(paneWidth, paneHeight):visible(false)
 			end
-		},
+		}
 
-		-- A quad that goes over the BackgroundImage to try and lighten/darken it however we want.
-		Def.Quad {
-			Name="BackgroundColor",
-			InitCommand=function(self)
-				self:zoomto(paneWidth, paneHeight)
-			end
-		},
-
-		-- Yet another quad that goes over all the background assets.
-		Def.Quad {
+		-- Overlay quad for gradient tinting (SRPG)
+		elements[#elements+1] = Def.Quad {
 			Name="BackgroundColor2",
 			InitCommand=function(self)
-				self:zoomto(paneWidth, paneHeight)
+				self:zoomto(paneWidth, paneHeight):visible(false)
 			end
-		},
-		
-		-- Header border
-		Def.Quad {
-			Name="HeaderBorder",
-			InitCommand=function(self)
-				self:zoomto(paneWidth + borderWidth, RowHeight + borderWidth + 1):y(-paneHeight/2 + RowHeight/2)
-			end
-		},
+		}
 
-		-- Green Header
-		Def.Quad {
-			Name="HeaderBackground",
-			InitCommand=function(self)
-				self:zoomto(paneWidth, RowHeight):y(-paneHeight/2 + RowHeight/2)
-			end
-		},
-
-		-- Header Text
-		LoadFont("Wendy/_wendy small").. {
-			Name="Header",
-			Text="Stamina RPG",
-			InitCommand=function(self)
-				self:zoom(0.5)
-				self:y(-paneHeight/2 + 12)
-			end
-		},
-
-		-- EX Score text (if applicable)
-		LoadFont("Wendy/_wendy small").. {
+		-- EX Score text (ITL)
+		elements[#elements+1] = LoadFont("Wendy/_wendy small").. {
 			Name="EX",
 			Text="EX",
 			InitCommand=function(self)
-				self:zoom(0.5)
-				self:y(-paneHeight/2 + 12)
-				self:x(paneWidth/2 - 18)
-				self:visible(false)
+				self:zoom(0.5):y(-paneHeight/2 + 12):x(paneWidth/2 - 18):visible(false)
 			end
-		},
+		}
 
 		-- Main Body Text
-		LoadFont("Common Normal").. {
+		elements[#elements+1] = LoadFont("Common Normal").. {
 			Name="BodyText",
 			Text="",
 			InitCommand=function(self)
-				self:valign(0)
-				self:wrapwidthpixels(paneWidth)
-				self:y(-paneHeight/2 + RowHeight * 3/2)
+				self:valign(0):wrapwidthpixels(paneWidth):y(-paneHeight/2 + RowHeight * 3/2)
 			end,
 			ResetCommand=function(self)
-				self:zoom(1)
-				self:wrapwidthpixels(paneWidth)
-				self:setext("")
+				self:zoom(1):wrapwidthpixels(paneWidth):settext("")
 			end,
-		},
+		}
 
-		-- This is always visible as we will always have multiple panes for RPG
-		Def.ActorFrame{
+		-- Navigation Footer Icons
+		elements[#elements+1] = Def.ActorFrame{
 			Name="PaneIcons",
 			InitCommand=function(self)
 				self:y(paneHeight/2 - RowHeight/2)
@@ -944,9 +950,13 @@ for player in ivalues(PlayerNumber) do
 					self:x(-paneWidth2Player/2 + 10)
 				end,
 				OnCommand=function(self) self:queuecommand("Bounce") end,
+				ShowCommand=function(self) self:queuecommand("Bounce") end,
 				BounceCommand=function(self)
-					self:decelerate(0.5):addx(10):accelerate(0.5):addx(-10)
-					self:queuecommand("Bounce")
+					local base_x = -paneWidth2Player/2 + 10
+					self:stoptweening():x(base_x)
+						:decelerate(0.5):x(base_x + 10)
+						:accelerate(0.5):x(base_x)
+						:queuecommand("Bounce")
 				end,
 			},
 
@@ -965,106 +975,98 @@ for player in ivalues(PlayerNumber) do
 					self:x(paneWidth2Player/2 - 10)
 				end,
 				OnCommand=function(self) self:queuecommand("Bounce") end,
+				ShowCommand=function(self) self:queuecommand("Bounce") end,
 				BounceCommand=function(self)
-					self:decelerate(0.5):addx(-10):accelerate(0.5):addx(10)
-					self:queuecommand("Bounce")
+					local base_x = paneWidth2Player/2 - 10
+					self:stoptweening():x(base_x)
+						:decelerate(0.5):x(base_x - 10)
+						:accelerate(0.5):x(base_x)
+						:queuecommand("Bounce")
 				end,
 			},
 		}
-	}
 
-	local af2 = af[#af]
-	-- The Leaderboard for the RPG data. Currently hidden until we want to display it.
-	af2[#af2+1] = Def.ActorFrame{
-		Name="Leaderboard",
-		InitCommand=function(self)
-			self:visible(false)
-		end,
-		-- Highlight backgrounds for the leaderboard.
-		Def.Quad {
-			Name="Rival1",
+		-- Leaderboard ActorFrame
+		local leaderboard = Def.ActorFrame{
+			Name="Leaderboard",
 			InitCommand=function(self)
-				self:diffuse(color("#BD94FF")):zoomto(paneWidth, RowHeight)
+				self:visible(false)
 			end,
-		},
-
-		Def.Quad {
-			Name="Rival2",
-			InitCommand=function(self)
-				self:diffuse(color("#BD94FF")):zoomto(paneWidth, RowHeight)
-			end,
-		},
-
-		Def.Quad {
-			Name="Rival3",
-			InitCommand=function(self)
-				self:diffuse(color("#BD94FF")):zoomto(paneWidth, RowHeight)
-			end,
-		},
-
-		Def.Quad {
-			Name="Self",
-			InitCommand=function(self)
-				self:diffuse(color("#A1FF94")):zoomto(paneWidth, RowHeight)
-			end,
-		},
-		BannerAndSong(0, 112, 0.34),
-	}
-
-	local af3 = af2[#af2]
-	for i=1, NumEntries do
-		--- Each entry has a Rank, Name, and Score subactor.
-		af3[#af3+1] = Def.ActorFrame{
-			Name="LeaderboardEntry"..i,
-			InitCommand=function(self)
-				self:x(-(paneWidth-paneWidth2Player)/2)
-				if NumEntries % 2 == 1 then
-					self:y(RowHeight*(i - (NumEntries+1)/2) )
-				else
-					self:y(RowHeight*(i - NumEntries/2))
-				end
-			end,
-
-			LoadFont("Common Normal").. {
-				Name="Rank",
-				Text="",
+			Def.Quad {
+				Name="Rival1",
 				InitCommand=function(self)
-					self:horizalign(right)
-					self:maxwidth(30)
-					self:x(-paneWidth2Player/2 + 30 + borderWidth)
+					self:diffuse(color("#BD94FF")):zoomto(paneWidth, RowHeight)
 				end,
 			},
-
-			LoadFont("Common Normal").. {
-				Name="Name",
-				Text="",
+			Def.Quad {
+				Name="Rival2",
 				InitCommand=function(self)
-					self:horizalign(center)
-					self:maxwidth(130)
-					self:x(-paneWidth2Player/2 + 100)
+					self:diffuse(color("#BD94FF")):zoomto(paneWidth, RowHeight)
 				end,
 			},
-
-			LoadFont("Common Normal").. {
-				Name="Score",
-				Text="",
+			Def.Quad {
+				Name="Rival3",
 				InitCommand=function(self)
-					self:horizalign(right)
-					self:x(paneWidth2Player/2-borderWidth)
+					self:diffuse(color("#BD94FF")):zoomto(paneWidth, RowHeight)
 				end,
 			},
-
-			LoadFont("Common Normal").. {
-				Name="Date",
-				Text="",
+			Def.Quad {
+				Name="Self",
 				InitCommand=function(self)
-					self:horizalign(right)
-					self:x(paneWidth2Player/2 + 100 - borderWidth)
-					self:visible(GAMESTATE:GetNumSidesJoined() == 1)
+					self:diffuse(color("#A1FF94")):zoomto(paneWidth, RowHeight)
 				end,
 			},
+			BannerAndSong(0, 112, 0.34),
 		}
+
+		for i=1, NumEntries do
+			leaderboard[#leaderboard+1] = Def.ActorFrame{
+				Name="LeaderboardEntry"..i,
+				InitCommand=function(self)
+					self:x(-(paneWidth-paneWidth2Player)/2)
+					if NumEntries % 2 == 1 then
+						self:y(RowHeight*(i - (NumEntries+1)/2))
+					else
+						self:y(RowHeight*(i - NumEntries/2))
+					end
+				end,
+
+				LoadFont("Common Normal").. {
+					Name="Rank",
+					Text="",
+					InitCommand=function(self)
+						self:horizalign(right):maxwidth(30):x(-paneWidth2Player/2 + 30 + borderWidth)
+					end,
+				},
+
+				LoadFont("Common Normal").. {
+					Name="Name",
+					Text="",
+					InitCommand=function(self)
+						self:horizalign(center):maxwidth(130):x(-paneWidth2Player/2 + 100)
+					end,
+				},
+
+				LoadFont("Common Normal").. {
+					Name="Score",
+					Text="",
+					InitCommand=function(self)
+						self:horizalign(right):x(paneWidth2Player/2 - borderWidth)
+					end,
+				},
+
+				LoadFont("Common Normal").. {
+					Name="Date",
+					Text="",
+					InitCommand=function(self)
+						self:horizalign(right):x(paneWidth2Player/2 + 100 - borderWidth)
+						self:visible(GAMESTATE:GetNumSidesJoined() == 1)
+					end,
+				},
+			}
+		end
+
+		elements[#elements+1] = leaderboard
+		return elements
 	end
-end
-
-return af
+})
