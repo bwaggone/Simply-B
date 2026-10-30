@@ -2,7 +2,6 @@ local Players = GAMESTATE:GetHumanPlayers()
 local NumPanes = SL.Global.GameMode=="Casual" and 1 or 8
 
 local InputHandler = nil
-local EventOverlayInputHandler = nil
 
 if ThemePrefs.Get("WriteCustomScores") then
 	WriteScores()
@@ -16,24 +15,13 @@ if SL.Global.GameMode ~= "Casual" then
 	-- and the number of panes there are to InputHandler.lua
 	t.OnCommand=function(self)
 		InputHandler = LoadActor("./InputHandler.lua", {self, NumPanes})
-		EventOverlayInputHandler = LoadActor("./Shared/EventInputHandler.lua")
 		SCREENMAN:GetTopScreen():AddInputCallback(InputHandler)
 		PROFILEMAN:SaveMachineProfile()
 	end
-	t.DirectInputToEngineCommand=function(self)
-		SCREENMAN:GetTopScreen():RemoveInputCallback(EventOverlayInputHandler)
-		SCREENMAN:GetTopScreen():AddInputCallback(InputHandler)
-
-		for player in ivalues(PlayerNumber) do
-			SCREENMAN:set_input_redirected(player, false)
-		end
-	end
 	t.DirectInputToEventOverlayHandlerCommand=function(self)
-		SCREENMAN:GetTopScreen():RemoveInputCallback(InputHandler)
-		SCREENMAN:GetTopScreen():AddInputCallback(EventOverlayInputHandler)
-
-		for player in ivalues(PlayerNumber) do
-			SCREENMAN:set_input_redirected(player, true)
+		local eventOverlay = self:GetChild("AutoSubmitMaster"):GetChild("EventOverlay")
+		if eventOverlay then
+			eventOverlay:playcommand("Open")
 		end
 	end
 else
