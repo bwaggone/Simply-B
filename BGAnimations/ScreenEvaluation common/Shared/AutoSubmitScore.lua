@@ -233,9 +233,12 @@ local AutoSubmitRequestProcessor = function(res, overlay)
 
 					-- Only display the overlay on the sides that are actually joined.
 					if ToEnumShortString("PLAYER_P"..i) == "P"..side and (data[playerStr]["rpg"] or data[playerStr]["itl"]) then
-						local eventAf = overlay:GetChild("AutoSubmitMaster"):GetChild("EventOverlay"):GetChild("P"..i.."EventAf")
-						eventAf:playcommand("Show", {data=data[playerStr]})
-						shouldDisplayOverlay = true
+						local eventOverlay = overlay:GetChild("AutoSubmitMaster"):GetChild("EventOverlay")
+						local eventAf = eventOverlay and (eventOverlay:GetChild("Pane_P"..i) or eventOverlay:GetChild("P"..i.."EventAf"))
+						if eventAf then
+							eventAf:playcommand("Show", {data=data[playerStr]})
+							shouldDisplayOverlay = true
+						end
 
 						if data[playerStr]["itl"] then
 							-- Check for downloadFolders
@@ -307,7 +310,6 @@ local AutoSubmitRequestProcessor = function(res, overlay)
 	end
 
 	if shouldDisplayOverlay then
-		overlay:GetChild("AutoSubmitMaster"):GetChild("EventOverlay"):visible(true)
 		overlay:queuecommand("DirectInputToEventOverlayHandler")
 	end
 
